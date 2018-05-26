@@ -15,10 +15,25 @@ func main() {
 	goctapus.ConnectDB("goapp")
 	goctapus.Migrate(goctapus.Databases["goapp"], "./models/tasks.sql")
 
-	goctapus.File("/", "public/index.html")
-	goctapus.GET("/tasks", handlers.GetTasks(goctapus.Databases["goapp"]))
-	goctapus.PUT("/tasks", handlers.PutTask(goctapus.Databases["goapp"]))
-	goctapus.DELETE("/tasks/:id", handlers.DeleteTask(goctapus.Databases["goapp"]))
+	goctapus.AddStatic("/", "public/index.html")
+
+	goctapus.AddEndpoint(goctapus.Route{
+		Method:  "GET",
+		Path:    "/tasks",
+		Handler: handlers.GetTasks(goctapus.Databases["goapp"]),
+	})
+
+	goctapus.AddEndpoint(goctapus.Route{
+		Method:  "PUT",
+		Path:    "/tasks",
+		Handler: handlers.PutTask(goctapus.Databases["goapp"]),
+	})
+
+	goctapus.AddEndpoint(goctapus.Route{
+		Method:  "DELETE",
+		Path:    "/tasks/:id",
+		Handler: handlers.DeleteTask(goctapus.Databases["goapp"]),
+	})
 
 	goctapus.Start()
 }
